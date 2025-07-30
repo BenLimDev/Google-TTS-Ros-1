@@ -30,7 +30,7 @@ class OptimizedFreeTTSNode:
         
         # TTS settings optimized for speed and quality
         self.language = rospy.get_param('~language', 'en')
-        self.tld = rospy.get_param('~tld', 'com')  # com=US, co.uk=British, com.au=Australian
+        self.tld = rospy.get_param('~tld', 'ca')  # com=US, co.uk=British, com.au=Australian
         self.slow_speech = rospy.get_param('~slow_speech', False)
         
         # Speed optimization settings

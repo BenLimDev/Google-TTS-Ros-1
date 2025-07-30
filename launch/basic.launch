@@ -3,7 +3,7 @@
     <node name="gtts_node" pkg="gtts_speech" type="gtts_node.py" output="screen">
         <!-- Language and Voice Settings -->
         <param name="language" value="en" />
-        <param name="tld" value="com" />
+        <param name="tld" value="ca" />
         <param name="slow_speech" value="false" />
         
         <!-- Performance Optimization Settings -->
