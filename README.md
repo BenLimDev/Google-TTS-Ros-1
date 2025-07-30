@@ -28,7 +28,7 @@ A high-performance Google Text-to-Speech (GTTS) ROS node with smart caching and 
 ```bash
 # 1. Clone the repository
 cd ~/catkin_ws/src
-git clone https://github.com/BenLimDev/gtts_speech.git
+git clone https://github.com/BenLimDev/Google-TTS-Ros-1.git
 
 # 2. Install Python dependencies
 pip3 install gtts pygame
