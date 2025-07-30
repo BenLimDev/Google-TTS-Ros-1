@@ -28,7 +28,7 @@ A high-performance Google Text-to-Speech (GTTS) ROS node with smart caching and 
 ```bash
 # 1. Clone the repository
 cd ~/catkin_ws/src
-git clone https://github.com/BenLimDev/Google-TTS-Ros-1.git
+git clone https://github.com/BenLimDev/gtts_speech
 
 # 2. Install Python dependencies
 pip3 install gtts pygame
@@ -45,23 +45,23 @@ source devel/setup.bash
 
 ```bash
 # Start the TTS node (US accent)
-roslaunch gtts_speech gtts_basic.launch
+roslaunch gtts_speech basic.launch
 
 # Send text to be spoken
 rostopic pub /text_to_speech std_msgs/String 'data: "Hello, this is working!"'
 
 # Try different accents
-roslaunch gtts_speech gtts_british.launch    # British accent
-roslaunch gtts_speech gtts_australian.launch # Australian accent
+roslaunch gtts_speech british.launch    # British accent
+roslaunch gtts_speech australian.launch # Australian accent
 ```
 
 ## Available Launch Files
 
 | Launch File | Description | Accent |
 |-------------|-------------|---------|
-| `gtts_basic.launch` | Default US accent | 🇺🇸 American |
-| `gtts_british.launch` | British accent | 🇬🇧 British |
-| `gtts_australian.launch` | Australian accent | 🇦🇺 Australian |
+| `basic.launch` | Default US accent | 🇺🇸 American |
+| `british.launch` | British accent | 🇬🇧 British |
+| `australian.launch` | Australian accent | 🇦🇺 Australian |
 
 ## Configuration
 
@@ -75,19 +75,6 @@ roslaunch gtts_speech gtts_australian.launch # Australian accent
 | `cache_dir` | `~/.ros/tts_cache` | Cache directory |
 | `max_cache_size` | `100` | Maximum cached files |
 | `preload_common_phrases` | `true` | Preload common phrases |
-
-### Custom Configuration
-
-```xml
-<launch>
-    <node name="gtts_node" pkg="gtts_speech" type="gtts_node.py" output="screen">
-        <param name="language" value="en" />
-        <param name="tld" value="com" />
-        <param name="enable_cache" value="true" />
-        <param name="cache_dir" value="/custom/cache/path" />
-    </node>
-</launch>
-```
 
 ## Topics
 
