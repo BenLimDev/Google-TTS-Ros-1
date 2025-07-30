@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="gtts_node" pkg="gtts_speech" type="gtts_node.py" output="screen">
+        <!-- Language and Voice Settings -->
+        <param name="language" value="en" />
+        <param name="tld" value="com" />
+        <param name="slow_speech" value="false" />
+        
+        <!-- Performance Optimization Settings -->
+        <param name="enable_cache" value="true" />
+        <param name="cache_dir" value="$(env HOME)/.ros/tts_cache" />
+        <param name="max_cache_size" value="100" />
+        <param name="use_threading" value="true" />
+        <param name="preload_common_phrases" value="true" />
+    </node>
+</launch>
+EOF
