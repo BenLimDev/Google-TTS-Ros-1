@@ -14,4 +14,3 @@
         <param name="preload_common_phrases" value="true" />
     </node>
 </launch>
-EOF
