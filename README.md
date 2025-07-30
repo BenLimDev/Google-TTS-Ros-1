@@ -1,4 +1,4 @@
-# (Paste the content from the artifact)# GTTS Speech - ROS Text-to-Speech Package
+GTTS Speech - ROS Text-to-Speech Package
 
 A high-performance Google Text-to-Speech (GTTS) ROS node with smart caching and multiple accent support.
 
@@ -28,7 +28,7 @@ A high-performance Google Text-to-Speech (GTTS) ROS node with smart caching and 
 ```bash
 # 1. Clone the repository
 cd ~/catkin_ws/src
-git clone https://github.com/YOUR_USERNAME/gtts_speech.git
+git clone https://github.com/BenLimDev/gtts_speech.git
 
 # 2. Install Python dependencies
 pip3 install gtts pygame
