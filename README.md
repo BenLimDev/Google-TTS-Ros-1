@@ -16,28 +16,6 @@ roslaunch gtts_speech basic.launch
 rostopic pub /text_to_speech std_msgs/String "data: 'Hello World'"
 ```
 
-## Setup
-
-### Dependencies
-
-**Python packages:**
-```bash
-pip install gtts pyttsx3 pygame pydub pyyaml
-```
-
-**System packages:**
-```bash
-sudo apt-get install ffmpeg espeak espeak-data libespeak-dev
-```
-
-### Common Phrases (Optional)
-Place `common_phrases.yaml` in the package root directory:
-```yaml
-common_phrases:
-  - "Hello"
-  - "System ready"
-  - "Task completed"
-```
 
 ## Usage
 
