@@ -10,6 +10,7 @@ import hashlib
 from gtts import gTTS
 import pygame
 import time
+import yaml
 
 class OptimizedFreeTTSNode:
     def __init__(self):
@@ -19,33 +20,29 @@ class OptimizedFreeTTSNode:
         # Initialize pygame mixer for audio playback
         pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=512)
         
-        # Cache settings for speed optimization
+        # Cache settings
         self.enable_cache = rospy.get_param('~enable_cache', True)
         self.cache_dir = rospy.get_param('~cache_dir', '/tmp/tts_cache')
-        self.max_cache_size = rospy.get_param('~max_cache_size', 100)  # Max cached files
+        self.max_cache_size = rospy.get_param('~max_cache_size', 100)
         
         # Create cache directory
         if self.enable_cache:
             os.makedirs(self.cache_dir, exist_ok=True)
         
-        # TTS settings optimized for speed and quality
+        # TTS settings
         self.language = rospy.get_param('~language', 'en')
-        self.tld = rospy.get_param('~tld', 'ca')  # com=US, co.uk=British, com.au=Australian
+        self.tld = rospy.get_param('~tld', 'ca')
         self.slow_speech = rospy.get_param('~slow_speech', False)
         
-        # Speed optimization settings
-        self.use_threading = rospy.get_param('~use_threading', True)
-        self.preload_common_phrases = rospy.get_param('~preload_common_phrases', True)
+        # Common phrases file path
+        self.common_phrases_file = rospy.get_param('~common_phrases_file', 
+                                                 os.path.join(os.path.dirname(__file__), 'common_phrases.yaml'))
         
         # Create a queue for text messages
         self.text_queue = queue.Queue()
         
-        # Cache for quick access to frequently used phrases
-        self.audio_cache = {}
-        
-        # Preload common phrases for instant responses
-        if self.preload_common_phrases:
-            threading.Thread(target=self.preload_phrases, daemon=True).start()
+        # Preload common phrases from YAML file
+        self.preload_phrases()
         
         # Start TTS worker thread
         self.tts_thread = threading.Thread(target=self.tts_worker, daemon=True)
@@ -56,35 +53,47 @@ class OptimizedFreeTTSNode:
         
         rospy.loginfo("GTTS node started (Language: {}, Accent: {})".format(self.language, self.tld))
         rospy.loginfo("Cache {} - Directory: {}".format('enabled' if self.enable_cache else 'disabled', self.cache_dir if self.enable_cache else 'N/A'))
+        rospy.loginfo("Common phrases file: {}".format(self.common_phrases_file))
+    
+    def load_common_phrases(self):
+        """Load common phrases from YAML file"""
+        try:
+            if os.path.exists(self.common_phrases_file):
+                with open(self.common_phrases_file, 'r') as file:
+                    data = yaml.safe_load(file)
+                    phrases = data.get('common_phrases', [])
+                    rospy.loginfo(f"Loaded {len(phrases)} common phrases from {self.common_phrases_file}")
+                    return phrases
+            else:
+                rospy.logwarn(f"Common phrases file not found: {self.common_phrases_file}")
+                return []
+        except Exception as e:
+            rospy.logerr(f"Error loading common phrases: {e}")
+            return []
     
     def preload_phrases(self):
-        """Preload common phrases for instant responses"""
-        common_phrases = [
-            "Hello",
-            "Ready",
-            "Complete",
-            "Error",
-            "Starting",
-            "Finished",
-            "Yes",
-            "No",
-            "Okay",
-            "Please wait"
-        ]
+        """Preload common phrases from YAML file"""
+        common_phrases = self.load_common_phrases()
+        
+        if not common_phrases:
+            rospy.logwarn("No common phrases to preload")
+            return
         
         rospy.loginfo("Preloading common phrases...")
+        successful_preloads = 0
+        
         for phrase in common_phrases:
             try:
                 self.generate_and_cache_audio(phrase)
+                successful_preloads += 1
                 time.sleep(0.1)  # Small delay to not overwhelm the API
             except Exception as e:
                 rospy.logwarn(f"Failed to preload phrase '{phrase}': {e}")
         
-        rospy.loginfo("Common phrases preloaded for instant responses")
+        rospy.loginfo(f"Successfully preloaded {successful_preloads}/{len(common_phrases)} phrases")
     
     def get_cache_filename(self, text):
         """Generate cache filename based on text and settings"""
-        # Create hash of text + settings for unique filename
         content = f"{text}_{self.language}_{self.tld}_{self.slow_speech}"
         hash_obj = hashlib.md5(content.encode())
         return os.path.join(self.cache_dir, f"tts_{hash_obj.hexdigest()}.mp3")
@@ -97,7 +106,6 @@ class OptimizedFreeTTSNode:
         try:
             cache_files = [f for f in os.listdir(self.cache_dir) if f.startswith('tts_')]
             if len(cache_files) > self.max_cache_size:
-                # Sort by modification time and remove oldest
                 cache_files.sort(key=lambda x: os.path.getmtime(os.path.join(self.cache_dir, x)))
                 files_to_remove = cache_files[:-self.max_cache_size]
                 
@@ -142,7 +150,7 @@ class OptimizedFreeTTSNode:
             
             # Wait for playback to finish
             while pygame.mixer.music.get_busy():
-                pygame.time.wait(50)  # Smaller wait time for better responsiveness
+                pygame.time.wait(50)
             
             # Clean up temporary file
             if is_temp and os.path.exists(audio_file):
@@ -177,7 +185,6 @@ class OptimizedFreeTTSNode:
                     generation_time = time.time() - start_time
                     
                     # Play the audio
-                    play_start = time.time()
                     self.play_audio_file(audio_file, is_temp)
                     total_time = time.time() - start_time
                     
