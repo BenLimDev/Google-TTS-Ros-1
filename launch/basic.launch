@@ -10,7 +10,18 @@
         <param name="enable_cache" value="true" />
         <param name="cache_dir" value="$(env HOME)/.ros/tts_cache" />
         <param name="max_cache_size" value="100" />
-        <param name="use_threading" value="true" />
-        <param name="preload_common_phrases" value="true" />
+        
+        <!-- Common Phrases Settings -->
+        <param name="common_phrases_file" value="$(find gtts_speech)/common_phrases.yaml" />
+        
+        <!-- Offline TTS Failsafe Settings -->
+        <param name="use_offline_fallback" value="true" />
+        <param name="offline_voice_rate" value="200" />        <!-- words per minute -->
+        <param name="offline_voice_volume" value="0.9" />      <!-- 0.0 to 1.0 -->
+        
+        <!-- Dual Generation Settings -->
+        <param name="gtts_timeout" value="10.0" />             <!-- seconds to wait for gTTS -->
+        <param name="offline_timeout" value="15.0" />          <!-- seconds to wait for offline TTS -->
+        <param name="prefer_online" value="true" />            <!-- prefer gTTS when both available -->
     </node>
 </launch>

@@ -1,0 +1,15 @@
+# Common phrases for TTS preloading
+# These phrases will be generated and cached at startup for instant responses
+
+description: "Common phrases for TTS preloading. Add or modify phrases as needed."
+
+notes:
+  - "Phrases are preloaded at startup for instant responses"
+  - "Keep phrases short for better performance" 
+  - "Consider your robot's common responses"
+  - "You can add phrases in multiple languages if needed"
+
+common_phrases:
+  # Basic responses
+  - "Preloaded phrases working"
+  - "Let's go Team UTM Airos"

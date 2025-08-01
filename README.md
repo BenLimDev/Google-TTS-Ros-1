@@ -31,7 +31,8 @@ cd ~/catkin_ws/src
 git clone https://github.com/BenLimDev/gtts_speech
 
 # 2. Install Python dependencies
-pip3 install gtts pygame
+pip3 install gtts pygame pyttsx3 pydub 
+sudo apt-get install ffmpeg
 
 # 3. Build the package
 cd ~/catkin_ws
